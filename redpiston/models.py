@@ -17,6 +17,7 @@ class Attachment(models.Model):
     description = models.CharField(max_length=255)
     class Meta:
         db_table = u'attachments'
+        managed = False
 
     @property
     def container(self):
@@ -39,6 +40,7 @@ class AuthSource(models.Model):
     tls = models.BooleanField()
     class Meta:
         db_table = u'auth_sources'
+        managed = False
 
 class BacklogChartData(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -50,6 +52,7 @@ class BacklogChartData(models.Model):
     updated_at = models.DateTimeField()
     class Meta:
         db_table = u'backlog_chart_data'
+        managed = False
         
 
 class Backlog(models.Model):
@@ -62,6 +65,7 @@ class Backlog(models.Model):
     velocity = models.IntegerField()
     class Meta:
         db_table = u'backlogs'
+        managed = False
         
     def __unicode__(self):
         return 'Backlog for %s' % (self.version)
@@ -77,6 +81,7 @@ class Board(models.Model):
     last_message = models.ForeignKey("Message", related_name="last_message_on_board")
     class Meta:
         db_table = u'boards'
+        managed = False
 
 class Change(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -89,6 +94,7 @@ class Change(models.Model):
     branch = models.CharField(max_length=255)
     class Meta:
         db_table = u'changes'
+        managed = False
         
     def __unicode__(self):
         return '%s: %s' % (self.action, self.path)
@@ -106,6 +112,7 @@ class Changeset(models.Model):
     issues = models.ManyToManyField("Issue", through="ChangesetIssue")
     class Meta:
         db_table = u'changesets'
+        managed = False
         
     def __unicode__(self):
         return 'Revision %s on %s' % (self.revision, self.repository)
@@ -115,6 +122,7 @@ class ChangesetIssue(models.Model):
     issue = models.ForeignKey("Issue")
     class Meta:
         db_table = u'changesets_issues'
+        managed = False
 
 
 class Comment(models.Model):
@@ -127,6 +135,7 @@ class Comment(models.Model):
     updated_on = models.DateTimeField()
     class Meta:
         db_table = u'comments'
+        managed = False
 
     @property
     def commented(self):
@@ -153,18 +162,21 @@ class CustomField(models.Model):
     trackers = models.ManyToManyField("Tracker", through="CustomFieldsTracker")
     class Meta:
         db_table = u'custom_fields'
+        managed = False
 
 class CustomFieldsProject(models.Model):
     custom_field = models.ForeignKey("CustomField")
     project = models.ForeignKey("Project")
     class Meta:
         db_table = u'custom_fields_projects'
+        managed = False
 
 class CustomFieldsTracker(models.Model):
     custom_field = models.ForeignKey("CustomField")
     tracker = models.ForeignKey("Tracker")
     class Meta:
         db_table = u'custom_fields_trackers'
+        managed = False
 
 class CustomValue(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -174,6 +186,7 @@ class CustomValue(models.Model):
     value = models.TextField()
     class Meta:
         db_table = u'custom_values'
+        managed = False
 
     @property
     def customized(self):
@@ -201,6 +214,7 @@ class Deliverable(models.Model):
     due = models.DateField()
     class Meta:
         db_table = u'deliverables'
+        managed = False
 
 class Document(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -211,6 +225,7 @@ class Document(models.Model):
     created_on = models.DateTimeField()
     class Meta:
         db_table = u'documents'
+        managed = False
 
 class EnabledModule(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -218,6 +233,7 @@ class EnabledModule(models.Model):
     name = models.CharField(max_length=255)
     class Meta:
         db_table = u'enabled_modules'
+        managed = False
 
 class Enumeration(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -230,6 +246,7 @@ class Enumeration(models.Model):
     parent = models.ForeignKey("self")
     class Meta:
         db_table = u'enumerations'
+        managed = False
 
 """
 # where is the group table?
@@ -238,6 +255,7 @@ class GroupsUsers(models.Model):
     user_id = models.IntegerField()
     class Meta:
         db_table = u'groups_users'
+        managed = False
 """
 
 class Issue(models.Model):
@@ -251,7 +269,7 @@ class Issue(models.Model):
     status = models.ForeignKey("IssueStatus")
     assigned_to = models.ForeignKey("User", related_name="assigned_issues")
     priority_id = models.IntegerField()
-    fixed_version_id = models.IntegerField()
+    fixed_version = models.ForeignKey("Version")
     author = models.ForeignKey("User", related_name="created_issues")
     lock_version = models.IntegerField()
     created_on = models.DateTimeField()
@@ -265,6 +283,7 @@ class Issue(models.Model):
     rgt = models.IntegerField()
     class Meta:
         db_table = u'issues'
+        managed = False
         
     def __unicode__(self):
         return '%s: %s' % (self.tracker, self.subject)
@@ -277,6 +296,7 @@ class IssueCategory(models.Model):
     assigned_to = models.ForeignKey("User")
     class Meta:
         db_table = u'issue_categories'
+        managed = False
         verbose_name_plural = "issue categories"
     
     def __unicode__(self):
@@ -290,6 +310,7 @@ class IssueRelation(models.Model):
     delay = models.IntegerField()
     class Meta:
         db_table = u'issue_relations'
+        managed = False
 
 class IssueStatus(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -300,6 +321,7 @@ class IssueStatus(models.Model):
     default_done_ratio = models.IntegerField()
     class Meta:
         db_table = u'issue_statuses'
+        managed = False
         verbose_name_plural = "issue statuses"
         ordering = ['position']
     
@@ -318,6 +340,7 @@ class Item(models.Model):
     points = models.IntegerField()
     class Meta:
         db_table = u'items'
+        managed = False
         
     def __unicode__(self):
         return 'Backlog Issue: %s' % (self.issue)
@@ -331,6 +354,7 @@ class JournalDetail(models.Model):
     value = models.CharField(max_length=255)
     class Meta:
         db_table = u'journal_details'
+        managed = False
 
 class Journal(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -341,6 +365,7 @@ class Journal(models.Model):
     created_on = models.DateTimeField()
     class Meta:
         db_table = u'journals'
+        managed = False
 
     @property
     def journalized(self):
@@ -354,6 +379,7 @@ class MemberRole(models.Model):
     inherited_from = models.IntegerField()
     class Meta:
         db_table = u'member_roles'
+        managed = False
 
 class Member(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -363,6 +389,7 @@ class Member(models.Model):
     mail_notification = models.BooleanField()
     class Meta:
         db_table = u'members'
+        managed = False
 
 class Message(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -379,6 +406,7 @@ class Message(models.Model):
     sticky = models.IntegerField()
     class Meta:
         db_table = u'messages'
+        managed = False
 
 class NewsItem(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -391,6 +419,7 @@ class NewsItem(models.Model):
     comments_count = models.IntegerField()
     class Meta:
         db_table = u'news'
+        managed = False
 
 class OpenIdAuthenticationAssociation(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -402,6 +431,7 @@ class OpenIdAuthenticationAssociation(models.Model):
     secret = models.TextField() # This field type is a guess.
     class Meta:
         db_table = u'open_id_authentication_associations'
+        managed = False
 
 class OpenIdAuthenticationNonce(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -410,14 +440,20 @@ class OpenIdAuthenticationNonce(models.Model):
     salt = models.CharField(max_length=255)
     class Meta:
         db_table = u'open_id_authentication_nonces'
+        managed = False
 """
 class PluginSchemaInfo(models.Model):
     plugin_name = models.CharField(max_length=255)
     version = models.IntegerField()
     class Meta:
         db_table = u'plugin_schema_info'
+        managed = False
 """
 class Project(models.Model):
+    STATUS_CHOICES = (
+        (1, 'Active'),
+        (9, 'Archived'),
+    )
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
     description = models.TextField()
@@ -427,12 +463,13 @@ class Project(models.Model):
     created_on = models.DateTimeField()
     updated_on = models.DateTimeField()
     identifier = models.CharField(max_length=20)
-    status = models.IntegerField()
+    status = models.IntegerField(choices=STATUS_CHOICES)
     lft = models.IntegerField()
     rgt = models.IntegerField()
     trackers = models.ManyToManyField("Tracker", through="ProjectTracker") 
     class Meta:
         db_table = u'projects'
+        managed = False
         
     def __unicode__(self):
         return self.name
@@ -442,6 +479,7 @@ class ProjectTracker(models.Model):
     tracker = models.ForeignKey("Tracker")
     class Meta:
         db_table = u'projects_trackers'
+        managed = False
 
 class Query(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -456,6 +494,7 @@ class Query(models.Model):
     view_options = models.TextField()
     class Meta:
         db_table = u'queries'
+        managed = False
         verbose_name_plural = u'queries'
 
 class Rate(models.Model):
@@ -466,6 +505,7 @@ class Rate(models.Model):
     date_in_effect = models.DateField()
     class Meta:
         db_table = u'rates'
+        managed = False
 
 class Repository(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -477,6 +517,7 @@ class Repository(models.Model):
     type = models.CharField(max_length=255)
     class Meta:
         db_table = u'repositories'
+        managed = False
         verbose_name_plural = u'repositories'
         
     def __unicode__(self):
@@ -491,6 +532,7 @@ class Role(models.Model):
     permissions = models.TextField()
     class Meta:
         db_table = u'roles'
+        managed = False
 
 class ScheduleClosedEntry(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -500,6 +542,7 @@ class ScheduleClosedEntry(models.Model):
     comment = models.TextField()
     class Meta:
         db_table = u'schedule_closed_entries'
+        managed = False
         verbose_name_plural = u'schedule closed entries'
 
 class ScheduleDefault(models.Model):
@@ -508,6 +551,7 @@ class ScheduleDefault(models.Model):
     weekday_hours = models.TextField()
     class Meta:
         db_table = u'schedule_defaults'
+        managed = False
 
 class ScheduleEntry(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -517,12 +561,14 @@ class ScheduleEntry(models.Model):
     hours = models.FloatField()
     class Meta:
         db_table = u'schedule_entries'
+        managed = False
         verbose_name_plural = u'schedule entries'
 """
 class SchemaMigrations(models.Model):
     version = models.CharField(unique=True, max_length=255)
     class Meta:
         db_table = u'schema_migrations'
+        managed = False
 """
 
 class Setting(models.Model):
@@ -532,6 +578,7 @@ class Setting(models.Model):
     updated_on = models.DateTimeField()
     class Meta:
         db_table = u'settings'
+        managed = False
 
 class StuffToDo(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -541,6 +588,7 @@ class StuffToDo(models.Model):
     stuff_type = models.CharField(max_length=255)
     class Meta:
         db_table = u'stuff_to_dos'
+        managed = False
 
     @property
     def stuff(self):
@@ -564,6 +612,7 @@ class TimeEntry(models.Model):
     rate = models.ForeignKey("Rate")
     class Meta:
         db_table = u'time_entries'
+        managed = False
         verbose_name_plural = u'time entries'
 
 class Token(models.Model):
@@ -574,6 +623,7 @@ class Token(models.Model):
     created_on = models.DateTimeField()
     class Meta:
         db_table = u'tokens'
+        managed = False
 
 class Tracker(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -583,6 +633,7 @@ class Tracker(models.Model):
     is_in_roadmap = models.BooleanField()
     class Meta:
         db_table = u'trackers'
+        managed = False
         ordering = ['position']
         
     def __unicode__(self):
@@ -596,6 +647,7 @@ class UserPreference(models.Model):
     time_zone = models.CharField(max_length=255)
     class Meta:
         db_table = u'user_preferences'
+        managed = False
 
 class User(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -616,6 +668,7 @@ class User(models.Model):
     identity_url = models.CharField(max_length=255)
     class Meta:
         db_table = u'users'
+        managed = False
     
     def __unicode__(self):
         return '%s %s' % (self.firstname, self.lastname)
@@ -633,6 +686,7 @@ class Version(models.Model):
     sharing = models.CharField(max_length=255)
     class Meta:
         db_table = u'versions'
+        managed = False
     
     def __unicode__(self):
         return '%s: %s' % (self.project, self.name)
@@ -644,6 +698,7 @@ class Watcher(models.Model):
     user = models.ForeignKey("User")
     class Meta:
         db_table = u'watchers'
+        managed = False
 
     @property
     def watchable(self):
@@ -662,6 +717,7 @@ class WikiContentVersion(models.Model):
     version = models.IntegerField()
     class Meta:
         db_table = u'wiki_content_versions'
+        managed = False
 
 class WikiContent(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -673,6 +729,7 @@ class WikiContent(models.Model):
     version = models.IntegerField()
     class Meta:
         db_table = u'wiki_contents'
+        managed = False
 
 class WikiPage(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -683,6 +740,7 @@ class WikiPage(models.Model):
     parent = models.ForeignKey("self")
     class Meta:
         db_table = u'wiki_pages'
+        managed = False
 
 class WikiRedirect(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -692,6 +750,7 @@ class WikiRedirect(models.Model):
     created_on = models.DateTimeField()
     class Meta:
         db_table = u'wiki_redirects'
+        managed = False
 
 class Wiki(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -700,6 +759,7 @@ class Wiki(models.Model):
     status = models.IntegerField()
     class Meta:
         db_table = u'wikis'
+        managed = False
 
 class Workflow(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -709,4 +769,5 @@ class Workflow(models.Model):
     role = models.ForeignKey("Role")
     class Meta:
         db_table = u'workflows'
+        managed = False
 
