@@ -1,0 +1,3 @@
+This is Django application to connect to an existing Redmine database. Our use case is to expose some read-only API data via django-piston.
+
+Note: This was created using inspectdb on an existing Redmine install with a number of plugins installed. It likely *won't* work out-of-the-box for you, but will probably save you some time if you happen to be doing the same thing.
