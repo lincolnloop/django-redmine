@@ -1,13 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#     * Rearrange models' order
-#     * Make sure each model has one field with primary_key=True
-# Feel free to rename the models, but don't rename db_table values or field names.
-#
-# Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
-# into your database.
-
 from django.db import models
+
+from redpiston.utils import load_generic_object
 
 class Attachment(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -24,6 +17,10 @@ class Attachment(models.Model):
     description = models.CharField(max_length=255)
     class Meta:
         db_table = u'attachments'
+
+    @property
+    def container(self):
+        return load_generic_object(self.container_type, self.container_id)
 
 class AuthSource(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -131,6 +128,11 @@ class Comment(models.Model):
     class Meta:
         db_table = u'comments'
 
+    @property
+    def commented(self):
+        return load_generic_object(self.commented_type, self.commented_id)
+
+
 class CustomField(models.Model):
     id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=30)
@@ -168,10 +170,15 @@ class CustomValue(models.Model):
     id = models.IntegerField(primary_key=True)
     customized_type = models.CharField(max_length=30)
     customized_id = models.IntegerField()
-    custom_field_id = models.IntegerField()
+    custom_field = models.ForeignKey("CustomField")
     value = models.TextField()
     class Meta:
         db_table = u'custom_values'
+
+    @property
+    def customized(self):
+        return load_generic_object(self.customized_type, self.customized_id)
+
 
 class Deliverable(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -252,7 +259,7 @@ class Issue(models.Model):
     start_date = models.DateField()
     done_ratio = models.IntegerField()
     estimated_hours = models.FloatField()
-    deliverable_id = models.IntegerField()
+    deliverable = models.ForeignKey("Deliverable")
     parent = models.ForeignKey("self")
     lft = models.IntegerField()
     rgt = models.IntegerField()
@@ -334,6 +341,11 @@ class Journal(models.Model):
     created_on = models.DateTimeField()
     class Meta:
         db_table = u'journals'
+
+    @property
+    def journalized(self):
+        return load_generic_object(self.journalized_type, self.journalized_id)
+
 
 class MemberRole(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -530,6 +542,11 @@ class StuffToDo(models.Model):
     class Meta:
         db_table = u'stuff_to_dos'
 
+    @property
+    def stuff(self):
+        return load_generic_object(self.stuff_type, self.stuff_id)
+
+
 class TimeEntry(models.Model):
     id = models.IntegerField(primary_key=True)
     project = models.ForeignKey("Project")
@@ -627,6 +644,11 @@ class Watcher(models.Model):
     user = models.ForeignKey("User")
     class Meta:
         db_table = u'watchers'
+
+    @property
+    def watchable(self):
+        return load_generic_object(self.watchable_type, self.watchable_id)
+
 
 class WikiContentVersion(models.Model):
     id = models.IntegerField(primary_key=True)
