@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 from redpiston.utils import load_generic_object
@@ -473,6 +475,15 @@ class Project(models.Model):
         
     def __unicode__(self):
         return self.name
+        
+    @property
+    def current_sprint(self):
+        open_sprints = Version.objects.filter(project=self,
+                            effective_date__gte=datetime.date.today()).order_by(
+                            'effective_date')
+        if open_sprints:
+            return open_sprints[0]
+        return None
 
 class ProjectTracker(models.Model):
     project = models.ForeignKey("Project")
